@@ -25,8 +25,10 @@ namespace OnlineTextEditor.Controllers
         // GET: Docs
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Docs.Include(d => d.User);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = from c in _context.Docs select c;
+
+            applicationDbContext = applicationDbContext.Where(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return View(await applicationDbContext.Include(y => y.User).ToListAsync());
         }
 
      
